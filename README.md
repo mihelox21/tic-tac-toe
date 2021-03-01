@@ -2,7 +2,7 @@
 # author: Mihelox
 # version: 1.0
 
-# webiste: 
+# webiste: https://mihelox-tic-tac-toe-test.herokuapp.com/
 
 # start app 
 # type "npm start"
