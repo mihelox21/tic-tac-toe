@@ -1,7 +1,7 @@
 import React from 'react'
-import './HeaderComponent.css'
+import './Field.css'
 
-function Square({tile, onClick}){
+function FieldView({tile, onClick}){
 
     const handleClick = (e) => {
         onClick(e)
@@ -16,4 +16,4 @@ function Square({tile, onClick}){
     )
 }
 
-export default Square;
+export default FieldView;

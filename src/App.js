@@ -1,5 +1,5 @@
 import './App.css';
-import Square  from "./components/HeaderComponent";
+import FieldView  from "./components/Field";
 import React, {useState} from 'react'
 
 const gameTable = [
@@ -18,6 +18,7 @@ const gameTable = [
 function App() {
     const [Field, setField] = useState(gameTable);
     const [Mark, setMark] = useState(0);
+    const [LastWinner, setLastWinner] = useState('None');
 
     const replaceElement = (arr, before, now) => {
         const result = arr.filter(element => element.id !== before)
@@ -25,7 +26,7 @@ function App() {
         return result
     }
 
-    const getWinner = (gameField) => {
+    const getWinningLine = (array) => {
         const options = [
             [1, 2, 3],
             [4, 5, 6],
@@ -36,35 +37,60 @@ function App() {
             [1, 5, 9],
             [3, 5, 7]
         ]
-        for (let i = 0; i < options.length; i++){
-            const line = options[i]
-            for (let j = 0; j < line.length; j++) {
-                if (gameField.id - 1 === options[i][j] && (gameField.value === 'X' || gameField.value === 'O')){
-                    return [true, gameField.value]
-                }
-            }
+        const subArray = []
+        for (let x = 0; x < array.length; x++){
+            subArray.push(array[x].id)
+        }
+        if (subArray.length >= 3)
+            for (let y = 0; y < options.length; y++) {
+                const isValid = subArray.every(i => options[y].includes(i))
+                if (isValid)
+                    return  1
+        }
+        return 0
+    }
+
+    const getWinner = (gameField) => {
+        const xArray = gameField.filter(element => element.value === 'X')
+        const yArray = gameField.filter(element => element.value === 'O')
+        if (getWinningLine(xArray)){
+            setLastWinner('X!')
+            setField(gameTable)
+        }
+        if (getWinningLine(yArray)){
+            setLastWinner('O!')
+            setField(gameTable)
         }
         return [false, '']
     }
 
     const updateField = (position) => {
-        console.log(getWinner(Field))
         if (position.value === '') {
+            // define updated table
             const NewArray = replaceElement(Field, position.id, (Mark === 0) ? 'X' : 'O')
+            const CleanField = NewArray.filter(e => e.value === '')
+            // finish game if table is full
+            if (CleanField.length === 0){
+                setLastWinner('None')
+                setField(gameTable)
+                return
+            }
+            // update table
             setField(NewArray)
             setMark((Mark === 0) ? 1 : 0)
-            //console.log('Field status: ', Field)
-        }else{
-            console.log('tile is updated..')
-            //console.log(Field)
+            getWinner(NewArray)
         }
     }
 
+
+
     return (
         <div className="App">
+            <p> Tic Tac Toe, v: 1.0, author: Mihelox</p>
+            <p> Last winner: {LastWinner}</p>
             <div className="main-container">
                 {Field.map((e) => (
-                    <Square tile={e} onClick={updateField} key={e.id}/>
+                    <FieldView tile={e} onClick={updateField} key={e.id}/>
                 ))}
             </div>
         </div>
