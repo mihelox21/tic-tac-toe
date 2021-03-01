@@ -43,7 +43,8 @@ function App() {
         }
         if (subArray.length >= 3)
             for (let y = 0; y < options.length; y++) {
-                const isValid = subArray.every(i => options[y].includes(i))
+                const line = options[y].sort()
+                const isValid = subArray.every(i => line.includes(i))
                 if (isValid)
                     return  1
         }
@@ -53,11 +54,11 @@ function App() {
     const getWinner = (gameField) => {
         const xArray = gameField.filter(element => element.value === 'X')
         const yArray = gameField.filter(element => element.value === 'O')
-        if (getWinningLine(xArray)){
+        if (getWinningLine(xArray.sort())){
             setLastWinner('X!')
             setField(gameTable)
         }
-        if (getWinningLine(yArray)){
+        if (getWinningLine(yArray.sort())){
             setLastWinner('O!')
             setField(gameTable)
         }
