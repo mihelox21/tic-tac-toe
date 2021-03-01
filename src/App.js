@@ -14,7 +14,6 @@ const gameTable = [
     {id: 9, value: ''},
 ]
 
-
 function App() {
     const [Field, setField] = useState(gameTable);
     const [Mark, setMark] = useState(0);
@@ -44,7 +43,7 @@ function App() {
         if (subArray.length >= 3)
             for (let y = 0; y < options.length; y++) {
                 const line = options[y].sort()
-                const isValid = subArray.every(i => line.includes(i))
+                const isValid = line.every(i => subArray.includes(i))
                 if (isValid)
                     return  1
         }
@@ -57,12 +56,14 @@ function App() {
         if (getWinningLine(xArray.sort())){
             setLastWinner('X!')
             setField(gameTable)
+            return 1
         }
         if (getWinningLine(yArray.sort())){
             setLastWinner('O!')
             setField(gameTable)
+            return 1
         }
-        return [false, '']
+        return 0
     }
 
     const updateField = (position) => {
@@ -70,20 +71,18 @@ function App() {
             // define updated table
             const NewArray = replaceElement(Field, position.id, (Mark === 0) ? 'X' : 'O')
             const CleanField = NewArray.filter(e => e.value === '')
+            // update table & check for winner
+            setField(NewArray)
+            setMark((Mark === 0) ? 1 : 0)
+            if (getWinner(NewArray)) return; // break function if winner is picked.
             // finish game if table is full
             if (CleanField.length === 0){
                 setLastWinner('None')
                 setField(gameTable)
-                return
+                return 0
             }
-            // update table
-            setField(NewArray)
-            setMark((Mark === 0) ? 1 : 0)
-            getWinner(NewArray)
         }
     }
-
-
 
     return (
         <div className="App">
