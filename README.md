@@ -8,6 +8,8 @@
 # type "npm start"
 
 # todo:
-# better & responsive 
-# back-end with option to play with friends
-# play against computer
+# apply styled component and change design of website
+
+# future?:
+# re-write code in typescript
+# make option to play online with friends
