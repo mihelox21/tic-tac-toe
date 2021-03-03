@@ -15,75 +15,73 @@ const gameTable = [
     {id: 9, value: ''},
 ]
 
-// initialize history-of-moves
-const movesHistory = []
+// store all winning-lines into array
+const winningLines = [
+    // ---
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+    // | | |
+    [1, 4, 7],
+    [2, 5, 8],
+    [3, 6, 9],
+    //  / \
+    [1, 5, 9],
+    [3, 5, 7]
+]
+
+// replace element and apply it in specific index
+const replaceElement = (arr, before, now) => {
+    const result = arr.filter(element => element.id !== before)
+    result.splice(before - 1, 0, {id: before, value: now})
+    return result
+}
+
+// check if player wins by checking his moves
+const getWinningLine = (movesArray) => {
+    // create array to separate player moves
+    const subArray = []
+    for (let x of movesArray){
+        subArray.push(x.id)
+    }
+    // check there is enough moves to execute loop
+    if (subArray.length >= 3)
+        for (let y of winningLines) {
+            // sort to get clear values ( sort function isn not needed because numbers are < 10 )
+            const line = y.sort()
+            // check that player have every fields of any winning lines
+            const isValid = line.every(i => subArray.includes(i))
+            if (isValid)
+                // return true ( win )
+                return  1
+        }
+    // return false ( lose )
+    return 0
+}
 
 function App() {
     // declare hooks to apply values
-    const [Field, setField] = useState(gameTable);
-    const [Mark, setMark] = useState(0);
-    const [LastWinner, setLastWinner] = useState('None');
-    const [Moves, setMoves] = useState(movesHistory);
+    const [field, setField] = useState(gameTable);
+    const [mark, setMark] = useState(0);
+    const [lastWinner, setLastWinner] = useState('None');
+    const [moves, setMoves] = useState([]);
 
-    // replace element and apply it in specific index
-    const replaceElement = (arr, before, now) => {
-        const result = arr.filter(element => element.id !== before)
-        result.splice(before - 1, 0, {id: before, value: now})
-        return result
-    }
-
-    // check if player wins by checking his moves
-    const getWinningLine = (array) => {
-        // store all winning moves to array
-        const options = [
-            // ---
-            [1, 2, 3],
-            [4, 5, 6],
-            [7, 8, 9],
-            // | | |
-            [1, 4, 7],
-            [2, 5, 8],
-            [3, 6, 9],
-            //  / \
-            [1, 5, 9],
-            [3, 5, 7]
-        ]
-        // create array to separate player moves
-        const subArray = []
-        for (let x = 0; x < array.length; x++){
-            subArray.push(array[x].id)
-        }
-        // check there is enough moves to execute loop
-        if (subArray.length >= 3)
-            for (let y = 0; y < options.length; y++) {
-                // sort to get clear values ( sort function isn not needed because numbers are < 10 )
-                const line = options[y].sort()
-                // check that player have every fields of any winning lines
-                const isValid = line.every(i => subArray.includes(i))
-                if (isValid)
-                    // return true ( win )
-                    return  1
-        }
-        // return false ( lose )
-        return 0
+    const getCurrentMark = (inNumber = false) => {
+        if (inNumber)
+            return (mark === 0) ? 1 : 0
+        return (mark === 0) ? 'X' : 'O'
     }
 
     const getWinner = (gameField) => {
-        // separate arrays to check marks
-        const xArray = gameField.filter(element => element.value === 'X')
-        const yArray = gameField.filter(element => element.value === 'O')
+        // pick mark to check
+        const targetMark = getCurrentMark()
+        const targetArray = gameField.filter(element => element.value === targetMark)
         // sort player array and check for win
-        if (getWinningLine(xArray.sort())){
+        if (getWinningLine(targetArray.sort())) {
             // update fields and set winner
-            setLastWinner('X!')
+            setLastWinner(targetMark)
             setField(gameTable)
             // return true ( to get winner and break main function )
-            return 1
-        }
-        // same as before but for second mark
-        if (getWinningLine(yArray.sort())){
-            setLastWinner('O!')
-            setField(gameTable)
             return 1
         }
         return 0
@@ -91,58 +89,57 @@ function App() {
 
     const updateField = (position) => {
         // execute only if tile is empty
-        if (position.value === '') {
+        if (position.value !== '') return;
 
-            // pick mark
-            const targetMark = (Mark === 0) ? 'X' : 'O'
-            // replace old array with new updated fields
-            const NewArray = replaceElement(Field, position.id, targetMark)
-            const CleanField = NewArray.filter(e => e.value === '')
-            // register moves to store it into array
-            const newMovesArray = Moves.concat({
-                id: (Moves.length === 0) ? 1 : Moves.length + 1,
-                tile: position.id,
-                mark: targetMark
-            })
+        // pick mark
+        const targetMark = getCurrentMark()
+        // replace old array with new updated fields
+        const NewArray = replaceElement(field, position.id, targetMark)
+        const CleanField = NewArray.filter(e => e.value === '')
+        // register moves to store it into array
+        const newMovesArray = moves.concat({
+            id: (moves.length === 0) ? 1 : moves.length + 1,
+            tile: position.id,
+            mark: targetMark
+        })
 
-            // insert new arrays & variables with hooks
-            setField(NewArray)
-            setMoves(newMovesArray)
-            setMark((Mark === 0) ? 1 : 0)
+        // insert new arrays & variables with hooks
+        setField(NewArray)
+        setMoves(newMovesArray)
+        setMark(getCurrentMark(true))
 
-            // check for winner and break functions
-            if (getWinner(NewArray))
-                // clear movesHistory after breaking game
-                return setMoves(movesHistory);
+        // check for winner and break functions
+        if (getWinner(NewArray))
+            // clear movesHistory after breaking game
+            return setMoves([]);
 
-            // finish game if game field is full and no one wins
-            if (CleanField.length === 0){
-                setLastWinner('None')
-                setField(gameTable)
-                // clear movesHistory after breaking game
-                return setMoves(movesHistory);
-            }
-        }
+        // finish game if game field is full and no one wins
+        if (CleanField.length > 0) return;
+
+        setLastWinner('None')
+        setField(gameTable)
+        // clear movesHistory after breaking game
+        return setMoves([]);
     }
 
     return ( // fill jsx code to combine react components or js code with html tags.
         <div className="App">
             <p> Tic Tac Toe, v: 1.0, author: Mihelox</p>
-            <p> Next Move: {Mark === 0 ? 'X' : 'O'}</p>
-            <p> Last winner: {LastWinner}</p>
+            <p> Next Move: {getCurrentMark()}</p>
+            <p> Last winner: {lastWinner}</p>
             <div className="main-container">
-                {Field.map((e) => (
+                {field.map((e) => (
                     <FieldView tile={e} onClick={updateField} key={e.id}/>
                 ))}
             </div>
             <div className="movesHistory-container">
                 <p>GameHistory: </p>
-                {Moves.map((e) => (
+                {moves.map((e) => (
                     <p key={e.id}>#{e.id} Mark: {e.mark}, Tile: {e.tile}</p>
                 ))}
             </div>
         </div>
-    );
+    )
 }
 
 export default App;
