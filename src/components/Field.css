@@ -1,13 +1,13 @@
 .main-container{
     background-color: gray;
-    height: 760px;
-    width: 763px;
+    height: 780px;
+    width: 780px;
     margin: auto;
 }
 
 .field{
-    width: 233px;
-    height: 233px;
+    width: 240px;
+    height: 240px;
     background-color: #f0f8ff;
     float: left;
     margin: 10px;

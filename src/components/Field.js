@@ -1,16 +1,10 @@
 import React from 'react'
 import './Field.css'
 
-function FieldView({tile, onClick}){
-
-    const handleClick = (e) => {
-        onClick(e)
-    }
-
+function FieldView({ tile, onClick }){
     return (
         <div className="field"
-             key={tile.id}
-             onClick={() => handleClick(tile)}>
+             onClick={() => onClick(tile)}>
             {tile.value}
         </div>
     )
