@@ -1,5 +1,4 @@
 import React from 'react'
-import './Field.css'
 
 function FieldView({ tile, onClick }){
     return (

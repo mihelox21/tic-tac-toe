@@ -56,23 +56,27 @@ const App = () => {
     const proceedGame = (field) => {
         applyTileToGameTable(field)
         checkIfSomeoneWinGame()
-        resetTableIfFull()
         updateCurrentMark()
+        resetTableIfFull()
     }
 
     return (
         <div className="App">
-            <p>TicTacToe v1.1 - @mihelox21.</p>
-            <p>{`Last winner: ${winner}.`}</p>
-            <p>To reset Game press F5.</p>
+            <div className="text-container">
+                <p>TicTacToe v1.1 - @mihelox21.</p>
+                <p>{`Last winner: ${winner}.`}</p>
+                <p>To reset Game press F5.</p>
+            </div>
             <div className="main-container">
-                {gameField.map( (element) => (
-                    <FieldView
-                        onClick={proceedGame}
-                        key={element.id}
-                        tile={element}
-                    />
-                ))}
+                <div className="game-container">
+                    {gameField.map( (element) => (
+                        <FieldView
+                            onClick={proceedGame}
+                            key={element.id}
+                            tile={element}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     )
