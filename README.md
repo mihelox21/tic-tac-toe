@@ -1,15 +1,16 @@
-# tic-tac-toe
-# author: Mihelox
-# version: 1.0
+### Tic-tac-toe
+Application built in reactJS.
 
-# webiste: https://mihelox-tic-tac-toe-test.herokuapp.com/
+You can try this app here: https://mihelox-tic-tac-toe-test.herokuapp.com/
+warning: loading heroku-app may take a while!
 
-# start app 
-# type "npm start"
+author: @mihelox21;
+version: 1.1;
 
-# todo:
-# apply styled component and change design of website
+history:
+- [x] init project
+- [x] create algorithm
+- [x] add some styles & breakpoints
+- [x] deploy it
 
-# future?:
-# re-write code in typescript
-# make option to play online with friends
+
